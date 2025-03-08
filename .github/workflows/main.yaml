@@ -39,11 +39,7 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Update kube config
-<<<<<<< Updated upstream
-      run: aws eks update-kubeconfig --name Group16EKSCluster --region ${{ env.AWS_REGION }}
-=======
       run: aws eks update-kubeconfig --name api-cluster --region ${{ env.AWS_REGION }}
->>>>>>> Stashed changes
 
     - name: Deploy to EKS
       env:
