@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ### Run the application
 ```bash
 cd api
-flask --app main run
+flask --app app run
 ```
 
 ### Access the Swagger UI

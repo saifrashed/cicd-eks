@@ -1,28 +1,21 @@
-FROM alpine:latest
+# Set base image (host OS)
+FROM python:3.12-alpine
 
-# Install Python, pip, and bash
-RUN apk add --no-cache python3 py3-pip bash
+# By default, listen on port 5000
+EXPOSE 5000/tcp
 
 # Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy the requirements.txt file to the working directory
+# Copy the dependencies file to the working directory
 COPY requirements.txt .
 
-# Create a virtual environment and install Python dependencies including Gunicorn
-RUN python3 -m venv venv \
-    && . /usr/src/app/venv/bin/activate \
-    && pip install --no-cache-dir -r requirements.txt
+# Install any dependencies
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# Copy the rest of the application code to the working directory
-COPY . .
+# Copy the content of the local src directory to the working directory
+COPY app.py .
 
-# Expose the port that the Flask app runs on
-EXPOSE 5000
+# Specify the command to run on container start
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:create_app()"]
 
-# Set environment variables for Flask
-ENV FLASK_APP=main.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Run the Flask application with Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
