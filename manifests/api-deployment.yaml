@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: api-app
-        image: 940482412682.dkr.ecr.eu-central-1.amazonaws.com/api:latest
+        image: ECR URI:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
