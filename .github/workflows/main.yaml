@@ -1,0 +1,57 @@
+name: Deploy to EKS
+
+on:
+  push:
+    branches:
+      - main
+      - ci-cd-pipeline
+
+env:
+  AWS_DEFAULT_REGION: eu-central-1
+  AWS_REGION: eu-central-1
+  ECR_REPOSITORY: api
+  IMAGE_TAG: latest
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push Docker image 
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./workflow-data-replication-api
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Update kube config
+<<<<<<< Updated upstream
+      run: aws eks update-kubeconfig --name Group16EKSCluster --region ${{ env.AWS_REGION }}
+=======
+      run: aws eks update-kubeconfig --name api-cluster --region ${{ env.AWS_REGION }}
+>>>>>>> Stashed changes
+
+    - name: Deploy to EKS
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ steps.commit.outputs.short }}
+      run: |
+        kubectl apply -f manifests/api-deployment.yaml
+        kubectl apply -f manifests/api-service.yaml
+
+
+
