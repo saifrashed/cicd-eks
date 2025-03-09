@@ -15,8 +15,7 @@ COPY requirements.txt .
 # Create a virtual environment and install Python dependencies including Gunicorn
 RUN python3 -m venv venv \
     && . /usr/src/app/venv/bin/activate \
-    && pip install --no-cache-dir -r requirements.txt \
-    && pip install gunicorn
+    && pip install --no-cache-dir -r requirements.txt 
 
 # Copy the rest of the application code to the working directory
 COPY . .
