@@ -28,4 +28,4 @@ ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
 # Run the application with Gunicorn
-CMD ["/bin/sh", "-c", ". /usr/src/app/venv/bin/activate && gunicorn --bind 0.0.0.0:5000 run:app"]
+CMD ["/bin/sh", "-c", ". /usr/src/app/venv/bin/activate && gunicorn --bind 0.0.0.0:5000 app:app"]
